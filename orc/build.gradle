@@ -29,18 +29,4 @@ dependencies {
     compile 'com.qihoo360.replugin:replugin-host-lib:2.3.0'
 }
 
-//修改jar名字+将指定jar生成的地方
-task makeJar(type:Copy){
-    //如果之前存在，则先删除
-    delete 'build/libs/orc.jar'
-    //设置拷贝的文件
-    from('build/intermediates/bundles/default/') //从这个目录下取出默认jar包
-    //生成jar包后的文件目录位置
-    into('build/libs/')
-    //include,exclude参数来设置过滤
-    include('classes.jar')
-    //重命名
-    rename('classes.jar','orc.jar')
-}
 
-makeJar.dependsOn(build)
