@@ -45,32 +45,10 @@ public class JwtApplication extends BaseApplication {
         super.attachBaseContext(base);
 
         RePluginConfig c = new RePluginConfig();
-        c.setVerifySign(!BuildConfig.DEBUG);
+        c.setVerifySign(!BuildConfig.ISDEBUG);
         RePlugin.App.attachBaseContext(this, c);
     }
 
 
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
 
-        /* Not need to be called if your application's minSdkVersion > = 14 */
-        RePlugin.App.onLowMemory();
-    }
-
-    @Override
-    public void onTrimMemory(int level) {
-        super.onTrimMemory(level);
-
-        /* Not need to be called if your application's minSdkVersion > = 14 */
-        RePlugin.App.onTrimMemory(level);
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration config) {
-        super.onConfigurationChanged(config);
-
-        /* Not need to be called if your application's minSdkVersion > = 14 */
-        RePlugin.App.onConfigurationChanged(config);
-    }
 }

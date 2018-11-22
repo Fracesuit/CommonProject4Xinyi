@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".MainActivity">
 
     <TextView
@@ -11,6 +12,29 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:background="@color/comm_green"
-        android:text="Hello World!" />
+        android:text="车牌识别" />
 
-</FrameLayout>
+    <TextView
+        android:id="@+id/tv_idcard"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/comm_green"
+        android:text="证件识别" />
+
+    <TextView
+        android:id="@+id/tv_orc_plate_uninstall"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@color/comm_green"
+        android:text="车牌插件卸载" />
+
+    <TextView
+        android:id="@+id/tv_orc_idcard_uninstall"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/comm_green"
+        android:text="证件插件卸载" />
+
+</LinearLayout>

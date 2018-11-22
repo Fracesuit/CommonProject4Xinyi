@@ -91,11 +91,11 @@ public class OcrUtils {
         }
     };
 
-    private static String ORC_BASE_URL = "http://192.168.42.159:8080/ocr/%s.apk";
+    private static String ORC_BASE_URL = "http://192.168.42.78:8080/ocr/%s.apk";
     private static String ORC_BASE_PATH;
 
-    private static final String PLUGIN_NAME_PLATE = "xmjt";
-    private static final String PLUGIN_NAME_IDCARD = "idcard";
+    public static final String PLUGIN_NAME_PLATE = "plate";
+    public static final String PLUGIN_NAME_IDCARD = "idcard";
 
     private OcrUtils(Activity activity) {
         this.activity = activity;
@@ -118,7 +118,7 @@ public class OcrUtils {
 
     @RequiresPermission(allOf = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.READ_PHONE_STATE})
     public void startIdcardOrc(int requestCode) {
-        startOrc(PLUGIN_NAME_IDCARD, "cn.xinyi.orc.PlateOcrCameraActivity", requestCode);
+        startOrc(PLUGIN_NAME_IDCARD, "cn.xinyi.orc.IdcardOcrCameraActivity", requestCode);
 
     }
 
@@ -183,7 +183,7 @@ public class OcrUtils {
         handler.sendMessage(message);
         PluginInfo install = RePlugin.install(path);
         if (install != null) {
-            boolean preload = RePlugin.preload(install);
+           boolean preload = RePlugin.preload(install);
             message = new Message();
             message.what = PLUGIN_END;
             message.obj = pluginName + "," + className;
