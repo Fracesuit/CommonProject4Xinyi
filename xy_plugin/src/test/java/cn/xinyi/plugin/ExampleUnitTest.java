@@ -1,4 +1,4 @@
-package cn.xinyi.orc;
+package cn.xinyi.plugin;
 
 import org.junit.Test;
 

@@ -1,4 +1,4 @@
-include ':app', ':orc',
+include ':app', ':xy_plugin',
         ':comm',
         ':core',
         ':pick_library1'

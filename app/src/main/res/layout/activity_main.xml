@@ -5,13 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    tools:context=".test.PluginHostActivity">
 
     <TextView
         android:id="@+id/tv_orc"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:background="@color/comm_green"
+        android:background="#ff0000"
         android:text="车牌识别" />
 
     <TextView
@@ -19,14 +19,23 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_marginTop="20dp"
-        android:background="@color/comm_green"
+        android:background="#ff0000"
         android:text="证件识别" />
+
+    <TextView
+        android:id="@+id/tv_test_plugin"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="20dp"
+        android:background="#ff0000"
+        android:text="测试插件" />
 
     <TextView
         android:id="@+id/tv_orc_plate_uninstall"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:background="@color/comm_green"
+        android:layout_marginTop="20dp"
+        android:background="#00ff00"
         android:text="车牌插件卸载" />
 
     <TextView
@@ -34,7 +43,24 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_marginTop="20dp"
-        android:background="@color/comm_green"
+        android:background="#0000ff"
         android:text="证件插件卸载" />
+
+    <TextView
+        android:id="@+id/tv_test_uninstall"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="20dp"
+        android:background="#ff00ff"
+        android:text="测试插件卸载" />
+
+    <TextView
+        android:id="@+id/tv_go"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="20dp"
+        android:background="#ff00ff"
+        android:text="跳转" />
+
 
 </LinearLayout>

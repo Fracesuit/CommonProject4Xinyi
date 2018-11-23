@@ -1,7 +1,6 @@
-package cn.xinyi.orc;
+package cn.xinyi.plugin;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -29,6 +28,20 @@ import java.net.URLConnection;
  */
 
 public class OcrUtils {
+
+   /* private String[][] type2 = {{"机读码", "3000"}, {"护照", "13"},
+            {"居民身份证", "2"}, {"港澳通行证", "9"}, {"大陆居民往来台湾通行证", "11"},
+            {"签证", "12"}, {"新版港澳通行证", "22"}, {"中国驾照", "5"},
+            {"中国行驶证", "6"}, {"香港身份证", "1001"}, {"回乡证(正面)", "14"},
+            {"回乡证(背面)", "15"}, {"澳门身份证", "1005"}, {"新版澳门身份证", "1012"},
+            {"台胞证", "10"}, {"新版台胞证(正面)", "25"}, {"新版台胞证(背面)", "26"},
+            {"台湾身份证(正面)", "1031"}, {"台湾身份证(背面)", "1032"},{"中国军官证", "7"},
+            {"全民健康保险卡", "1030"}, {"马来西亚身份证", "2001"}, {"新加坡身份证", "2004"},
+            {"新西兰驾照", "2003"}, {"加利福尼亚驾照", "2002"}, {"印度尼西亚身份证", "2010"}, {"泰国身份证", "2011"}};*/
+
+
+    public static final int ORC_TYPE_PLATE = -1;//车牌
+    public static final int ORC_TYPE_SFZ = 2;//居民身份证
 
     private static final int NET_START = 1;
     private static final int NET_ERROR = 2;
@@ -75,7 +88,8 @@ public class OcrUtils {
                     int cameras = Camera.getNumberOfCameras();
                     if (cameras > 0) {
                         Intent intent = RePlugin.createIntent(split[0], split[1]);
-                        RePlugin.startActivityForResult(activity, intent, msg.arg1);
+                        intent.putExtra("ocrType", msg.arg1);
+                        RePlugin.startActivity(activity, intent);
                     } else {
                         Toast.makeText(activity, "没有摄像机设备", Toast.LENGTH_SHORT).show();
                     }
@@ -91,7 +105,7 @@ public class OcrUtils {
         }
     };
 
-    private static String ORC_BASE_URL = "http://192.168.42.78:8080/ocr/%s.apk";
+    private static String ORC_BASE_URL = "http://10.24.4.100:8080/ocr/%s.apk";
     private static String ORC_BASE_PATH;
 
     public static final String PLUGIN_NAME_PLATE = "plate";
@@ -106,34 +120,43 @@ public class OcrUtils {
         dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         dialog.setIndeterminate(true);
         ORC_BASE_PATH = PathUtils.getExternalPrivateCache(activity).getPath() + "/%s.apk";
+
+
     }
 
-    public static OcrUtils getInstance(Activity activity) {
+    public static OcrUtils getInstance(Activity activity, DefaultCallBack callBack) {
         if (ocrUtils == null) {
             ocrUtils = new OcrUtils(activity);
         }
+        PluginBroadcastReceiver.getInstance().registerReceiver(activity, callBack);
         return ocrUtils;
+    }
+
+    // 务必要调用这个释放广播
+    public static void releaseOrc(Activity activity) {
+        PluginBroadcastReceiver.getInstance().unregisterReceiver(activity);
     }
 
 
     @RequiresPermission(allOf = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.READ_PHONE_STATE})
-    public void startIdcardOrc(int requestCode) {
-        startOrc(PLUGIN_NAME_IDCARD, "cn.xinyi.orc.IdcardOcrCameraActivity", requestCode);
+    public void startIdcardOrc(int ocrType) {
+        startOrc(PLUGIN_NAME_IDCARD, "cn.xinyi.orc.IdcardOcrCameraActivity", ocrType);
 
     }
 
     //这三个权限是必须要的
     @RequiresPermission(allOf = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.READ_PHONE_STATE})
-    public void startPlateOrc(int requestCode) {
-        startOrc(PLUGIN_NAME_PLATE, "cn.xinyi.orc.PlateOcrCameraActivity", requestCode);
+    public void startPlateOrc() {
+        startOrc(PLUGIN_NAME_PLATE, "cn.xinyi.orc.PlateOcrCameraActivity", -1);
     }
 
-    private void startOrc(final String pluginName, final String className, final int requestCode) {
+
+    private void startOrc(final String pluginName, final String className, final int ocrType) {
         if (RePlugin.isPluginInstalled(pluginName)) {
             Message message = new Message();
             message.what = PLUGIN_END;
             message.obj = pluginName + "," + className;
-            message.arg1 = requestCode;
+            message.arg1 = ocrType;
             handler.sendMessage(message);
 
         } else {
@@ -143,18 +166,18 @@ public class OcrUtils {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        installPluin(pluginName, className, requestCode);
+                        installPluin(pluginName, className, ocrType);
                     }
                 }).start();
 
             } else {
-                downloadAndInstall(pluginName, className, requestCode);
+                downloadAndInstall(pluginName, className, ocrType);
             }
 
         }
     }
 
-    private void downloadAndInstall(final String pluginName, final String className, final int requestCode) {
+    private void downloadAndInstall(final String pluginName, final String className, final int ocrType) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -167,7 +190,7 @@ public class OcrUtils {
                     message.what = NET_ERROR;
                     handler.sendMessage(message);
                 } else {
-                    installPluin(pluginName, className, requestCode);
+                    installPluin(pluginName, className, ocrType);
                 }
 
             }
@@ -176,23 +199,23 @@ public class OcrUtils {
 
     private int retryTimes = 3;
 
-    private void installPluin(String pluginName, String className, int requestCode) {
+    private void installPluin(String pluginName, String className, int ocrType) {
         String path = String.format(ORC_BASE_PATH, pluginName);
         Message message = new Message();
         message.what = PLUGIN_START;
         handler.sendMessage(message);
         PluginInfo install = RePlugin.install(path);
         if (install != null) {
-           boolean preload = RePlugin.preload(install);
+            boolean preload = RePlugin.preload(install);
             message = new Message();
             message.what = PLUGIN_END;
             message.obj = pluginName + "," + className;
-            message.arg1 = requestCode;
+            message.arg1 = ocrType;
             handler.sendMessage(message);
         } else {
             if (retryTimes-- > 0) {
                 //重试3次
-                downloadAndInstall(pluginName, className, requestCode);
+                downloadAndInstall(pluginName, className, ocrType);
             } else {
                 message = new Message();
                 message.what = PLUGIN_ERROR;

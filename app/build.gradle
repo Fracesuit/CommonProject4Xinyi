@@ -106,5 +106,5 @@ repluginHostConfig {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation project(':comm')
-    implementation project(':orc')
+    implementation project(':xy_plugin')
 }

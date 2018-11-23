@@ -1,4 +1,4 @@
-package cn.xinyi.orc;
+package cn.xinyi.plugin;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
